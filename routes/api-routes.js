@@ -1,61 +1,44 @@
-const Workout = require('../models/Workout');
+const Workout = require("../models/Workout");
 
 module.exports = (app) => {
-    app.get('/api/workouts', (req, res) => {
-        Workout.find({})
-            .then((workouts) => {
-                workouts.forEach((workout) => {
-                    workout.totalDuration = 0;
-                    workout.exercises.forEach((exercise) => {
-                        workout.totalDuration += exercise.duration;
-                    });
-                });
+  app.get("/api/workouts", (req, res) => {
+    Workout.find({})
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  });
 
-                res.json(workouts);
-            })
-            .catch((err) => {
-                res.json(err);
-            });
-    });
+  app.put("/api/workouts/:id", (req, res) => {
+    let workoutId = req.params.id;
+    Workout.findByIdAndUpdate(workoutId, { $push: { exercises: req.body } })
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  });
 
-    app.get('/api/workouts/range', (req, res) => {
-        Workout.find({})
-            .then((data) => {
-                res.json(data);
-            })
-            .catch(({ message }) => {
-                res.json(message);
-            });
-    });
+  app.post("/api/workouts", (req, res) => {
+    Workout.create(req.body)
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  });
 
-    app.post('/api/workouts', ({ body }, res) => {
-        Workout.create(body)
-            .then((data) => {
-                res.json(data);
-            })
-            .catch(({ message }) => {
-                res.json(message);
-            });
-    });
-
-    app.put('/api/workouts/:id', (req, res) => {
-        Workout.findById(req.params.id)
-            .then((data) => {
-                let workoutExercises = data.exercises;
-
-                workoutExercises.push(req.body);
-
-                Workout.findByIdAndUpdate(
-                    req.params.id,
-                    data,
-                    (err, result) => {
-                        if (err) res.json(err);
-                        else res.json(result);
-                    }
-                );
-            })
-            .catch(({ message }) => {
-                res.json(message);
-            });
-    });
+  app.get("/api/workouts/range", (req, res) => {
+    Workout.find({})
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  });
 };

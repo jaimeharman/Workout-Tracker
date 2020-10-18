@@ -1,17 +1,15 @@
-var path = require("path");
+const path = require("path")
+const root = path.join(__dirname, "../public");
 
 module.exports = function (app) {
-
-    app.get("/exercise", function (req, res) {
-        res.sendFile(path.join(__dirname, "../public/exercise.html"));
+    
+    // GET Method for exercise.html
+    app.get("/exercise", (req, res) => {
+        res.sendFile(root + "/exercise.html")
     });
-
-    app.get("/", function (req, res) {
-        res.sendFile(path.join(__dirname, "../public/index.html"));
+  
+    // GET Method for stats html
+    app.get("/stats", (req, res) => {
+        res.sendFile(root + "/stats.html")
     });
-
-    app.get("/stats", function (req, res) {
-        res.sendFile(path.join(__dirname, "../public/stats.html"));
-    });
-
-}
+  };
